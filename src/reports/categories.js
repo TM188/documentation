@@ -83,12 +83,44 @@ class CategoryTree extends React.Component {
                                               )
                                               })
                                               .map((page) => {
-                                                return (
-                                                  <li>
-                                                  {page.node.frontmatter.title}
-                                                  : {page.node.frontmatter.subtitle}
-                                                  </li>
-                                                )
+                      // Guides URLs are already absolute urls.
+                      if (/^\/guides\/.*$/.test(page.node.fields.slug)) {
+                        const result = /^(\/guides\/[A-Za-z0-9\-\_]+)\/?.*$/.exec(page.node.fields.slug)
+                        // Use printedGuides to avoid showing the same guide twice.
+                        if (printedGuides.indexOf(result[1]) === -1) {
+                          printedGuides.push(result[1])
+                          return (
+                            <li key={page.node.id}>
+                              <Link to={`${result[1]}`}>
+                                {page.node.frontmatter.title}
+                              </Link>
+                            </li>
+                          )
+                        }
+                      } else {
+                        if (/^\/overview\/.*$/.test(page.node.fields.slug)) {
+                        const result = /^(\/overview\/[A-Za-z0-9\-\_]+)\/?.*$/.exec(page.node.fields.slug)
+                        // Use printedOverview to avoid showing the same guide twice.
+                        if (printedOverview.indexOf(result[1]) === -1) {
+                          printedOverview.push(result[1])
+                          return (
+                            <li key={page.node.id}>
+                              <Link to={`${result[1]}`}>
+                                {page.node.frontmatter.title}
+                              </Link>
+                            </li>
+                          )
+                        } }
+                       else {
+                          return (
+                          <li key={page.node.id}>
+                            <Link to={`/${page.node.fields.slug}`}>
+                              {page.node.frontmatter.title}
+                            </Link>
+                          </li>
+                          )
+                        }
+                      }
                                               })
                                             }
 
